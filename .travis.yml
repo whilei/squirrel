@@ -20,11 +20,13 @@ before_deploy:
 # This has to happen outside the script, otherwise path will only be set for
 # subprocess.
 - export PATH=$PATH:$PWD/janusbin
+- cp SENDME.txt SENDME-$(janus version -format v%M.%m.%P+%C-%S).dep.txt
 
 # Proof-of-concept deploying to Isaac test GCP storage.
 deploy:
   skip_cleanup: true
   provider: script
-  script: ./deploy.sh
+  script:
+    - janus deploy -to isaac-tests/squirrel/$(janus version -format %M.%m.x)/ -files ./*.dep.txt -key ./isaac-test-gcp-service-key.enc.json
   on:
     tags: true
