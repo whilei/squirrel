@@ -14,7 +14,7 @@ script:
 # Run go tests.
 - cat ./SENDME.txt
 
-after_success:
+before_deploy:
 # Install janus.
 - curl -sL https://raw.githubusercontent.com/ethereumproject/janus/master/get.sh | bash
 
