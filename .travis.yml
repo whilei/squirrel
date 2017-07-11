@@ -17,6 +17,9 @@ script:
 before_deploy:
 # Install janus.
 - curl -sL https://raw.githubusercontent.com/ethereumproject/janus/master/get.sh | bash
+# This has to happen outside the script, otherwise path will only be set for
+# subprocess.
+- export PATH=$PATH:$PWD/janusbin
 
 # Proof-of-concept deploying to Isaac test GCP storage.
 deploy:
