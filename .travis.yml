@@ -27,6 +27,9 @@ deploy:
   skip_cleanup: true
   provider: script
   script:
-    - janus deploy -to isaac-tests/squirrel/$(janus version -format %M.%m.x)/ -files ./*.dep.txt -key ./isaac-test-gcp-service-key.enc.json
+    - janus deploy \
+      -to isaac-tests/squirrel/$(janus version -format %M.%m.x) \
+      -files ./*.dep.txt \
+      -key ./isaac-test-gcp-service-key.enc.json
   on:
     tags: true
