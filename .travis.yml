@@ -1,0 +1,27 @@
+language: ruby
+rvm: 2.2
+os:
+# We only need one build OS because goreleaser can build for all OS's.
+- linux
+
+env:
+  global:
+    # Isaac deploy GCP_PASSWD encrypted: travis encrypt -r whilei/janus GCP_PASSWD=blahblahblah GITHUB_TOKEN=asdfasdf123123
+    # GCP_PASSWD used for Janus deploy
+    - secure: "hC1rRx9eqwV+e3z4IiUDM0t3U6y88TLqDGGjM5EAXUdKMIAEkqEOqHXAOJX//gzVgDE7MvIBcI1JS2gEr7wwGT/32fnF9zp9MUgF5ka19HCJYWjcTTCbkTm6XfwQZ9TP5K50d/TTzGlICuyRhQSxc/mV//BYaNAXs9lmzKZ1CEHecNMpx9OMEGfy6SMuZ7BfoLKVTbnEnKClP5hh6GgujR9uMzFG165wxtf6ml0furqgsw5utHokk5DVF96Wy3Ccb9NsgAq7EiPAdZ1Ppp2kzLUtYvooNO9nLOCvqyEaQWlB649/nspc3OWbxEWMJygmUAUKj3cY5Cm0r/JgVpzv9WWqUT7yIuxUP2S41jNiEnB1/tv30cDAE7mpdO0kxoeovqGwMmBHGwpGeKkRoZco/2zpAb59b1L0b28gMVtCRSULxPJT7GU+z0oM5b+P6xzU2w3Z2WrJDnnKsbUZyZDjvdpz1AZCSBkSdBhshKNCH3skPDMwURL5eL25G8mjqOc+IhCOHp8psVA5RSDo9i4o/OKguo7WUh9SiAf3ygcfBSnyjuuphsQ0w7BkIKH85CVjDGW9860m9+q4ipVo+cBCIX2UgYg5xqVSmnk9NrbQcF/0Z+M5tL4+sEiN9yyknaHpU5nCFv4X13N+MmcWj3dIlGrH6aEu8SoLsCLAB3KaWYQ="
+
+script:
+# Run go tests.
+- cat ./SENDME.txt
+
+after_success:
+# Install janus.
+- curl -sL https://raw.githubusercontent.com/ethereumproject/janus/master/get.sh | bash
+
+# Proof-of-concept deploying to Isaac test GCP storage.
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: ./deploy.sh
+  on:
+    tags: true
