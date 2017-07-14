@@ -13,10 +13,11 @@ install:
   - sed -E 's/v([[:digit:]]+\.[[:digit:]]+)\.[[:digit:]]-([[:digit:]]+).+/v\1.x/' version.txt > version-base.txt
 
   # Install janus.
-  - curl -sL https://raw.githubusercontent.com/whilei/janus/master/get-windows.sh | bash
+  - curl -sL https://raw.githubusercontent.com/ethereumproject/janus/master/get-windows.sh | bash
   - set PATH=./janusbin;%PATH%
   - echo %PATH%
 
+  # TODO: figure the fuck out how to escape %'s
   # - janus.exe version -format="%%M.%%m.x" > version-base.txt
   # - janus.exe version -format="%%M.%%m.%%P+%%C-%%S" > version.txt
   - set /p VERSION=<version.txt
@@ -39,6 +40,6 @@ before_deploy:
   # - secure-file\tools\secure-file -decrypt isaac-test-gcp-service-key.enc.json -secret %GCP_PASSWD% -out .gcloud.json
 deploy_script:
   - ps: >-
-      If ($env:APPVEYOR_REPO_BRANCH -eq 'master') {
-          janus.exe deploy -to='isaac-tests/squirrel/'%VERSION_BASE%'/brainy-win64-'%VERSION%'.zip' -files="./*.zip" -key="./isaac-test-gcp-service-key.enc.json"
+      If ($env:APPVEYOR_REPO_BRANCH -eq 'master') 
+          janus.exe deploy -to='isaac-tests/squirrel-0.1.5/'%VERSION_BASE%'/brainy-win64-'%VERSION%'.zip' -files="./*.zip" -key="./isaac-test-gcp-service-key.enc.json"
       }
