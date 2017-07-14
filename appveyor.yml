@@ -13,7 +13,7 @@ install:
   # - sed -E 's/v([[:digit:]]+\.[[:digit:]]+)\.[[:digit:]]-([[:digit:]]+).+/v\1.x/' version.txt > version-base.txt
 
   # Install janus.
-  - curl -sL https://raw.githubusercontent.com/whilei/janus/master/get.sh | bash
+  - curl -sL https://raw.githubusercontent.com/whilei/janus/master/get-windows.sh | bash
   - set PATH=./janusbin;%PATH%
   - echo %PATH%
 
