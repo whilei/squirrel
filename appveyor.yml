@@ -38,8 +38,8 @@ before_deploy:
   # Set up GCP upload.
   - nuget install secure-file -ExcludeVersion
   - secure-file\tools\secure-file -decrypt isaac-test-gcp-service-key.enc.json -secret %GCP_PASSWD% -out .gcloud.json
- deploy_script:
+deploy_script:
   - ps: >-
       If ($env:APPVEYOR_REPO_BRANCH -eq 'master') {
-          janus deploy -to="builds.etcdevteam.com/squirrel/%VERSION_BASE%/brainy-win64-%VERSION%.zip" -files "./*.zip" -key="./.gcloud.json"
+          janus.exe deploy -to="builds.etcdevteam.com/squirrel/%VERSION_BASE%/brainy-win64-%VERSION%.zip" -files "./*.zip" -key="./.gcloud.json"
       }
