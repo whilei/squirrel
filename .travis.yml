@@ -25,7 +25,11 @@ before_deploy:
 # subprocess.
 - export PATH=$PATH:$PWD/janusbin
 
-- cp SENDME.txt SENDME-$(janus version -format v%M.%m.%P+%C-%S).dep.txt
+# If HEAD is not tagged, use sed substitution to modify
+# archive name template, using janus to get commit count and git HEAD hash
+- export JANUS_COMMIT_COUNT=$(janus version -format %C)
+- export JANUS_SHA1=$(janus version -format %S)
+- if [[ ! $JANUS_COMMIT_COUNT = 0 ]]; then sed -i.bak 's/brainy-{{.Tag}}_{{ .Os }}_{{ .Arch }}/brainy-{{.Tag}}+'$JANUS_COMMIT_COUNT-$JANUS_SHA1'_{{ .Os }}_{{ .Arch }}/' ./.goreleaser.yml; fi
 
 # Use goreleaser to create builds and archives.
 # Places builds and their archives in ./dist/
