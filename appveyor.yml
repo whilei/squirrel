@@ -1,0 +1,45 @@
+platform: x64
+clone_folder: c:\gopath\src\github.com\ethereumproject\go-ethereum
+os: Visual Studio 2015
+environment:
+  GOPATH: c:\gopath
+  # GCP_PASSWD:
+    # secure: erzLJz7qT0kCJa+jZG6Sf9wwkfLYO2UDLzydkKTdwqA=
+install:
+  - set PATH=%GOPATH%\bin;c:\go\bin;C:\msys64\mingw64\bin;C:\msys64\usr\bin\;%PATH%
+  # - git describe --tags --always > version.txt
+  # - sed -E 's/v([[:digit:]]+\.[[:digit:]]+)\.[[:digit:]]-([[:digit:]]+)-g([a-f0-9]+)/v\1.\2+\3/' version.txt > version-app.txt
+  # - sed -E 's/v([[:digit:]]+\.[[:digit:]]+)\.[[:digit:]]-([[:digit:]]+).+/v\1.\2/' version.txt > version-only.txt
+  # - sed -E 's/v([[:digit:]]+\.[[:digit:]]+)\.[[:digit:]]-([[:digit:]]+).+/v\1.x/' version.txt > version-base.txt
+
+  # Install janus.
+  - curl -sL https://raw.githubusercontent.com/whilei/janus/master/get-windows.sh | bash
+  - set PATH=./janusbin;%PATH%
+  - echo %PATH%
+
+  - janus version -format="%M.%m.x" > version-base.txt
+  - janus version -format="%M.%m.%P+%C-%S" > version.txt
+  - set /p VERSION=<version.txt
+  - set /p VERSION_BASE=<version-base.txt
+  - echo %VERSION_BASE% %VERSION%
+
+  - echo %GOPATH%
+  - go version
+  - go env
+  - go get golang.org/x/sys/windows
+build_script:
+  # - go test ./...
+  - go build -o brainy.exe main.go
+  - 7z a brainy-win64-%VERSION%.zip brainy.exe
+artifacts:
+  - path: '*.zip'
+    name: brainy
+before_deploy:
+   # Set up GCP upload.
+   - nuget install secure-file -ExcludeVersion
+   - secure-file\tools\secure-file -decrypt isaac-test-gcp-service-key.enc.json -secret %GCP_PASSWD% -out .gcloud.json
+ deploy_script:
+   - ps: >-
+       If ($env:APPVEYOR_REPO_BRANCH -eq 'master') {
+           janus deploy -to="builds.etcdevteam.com/squirrel/%VERSION_BASE%/brainy-win64-%VERSION%.zip" -files "./*.zip" -key="./.gcloud.json"
+       }
