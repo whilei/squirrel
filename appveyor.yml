@@ -41,5 +41,5 @@ before_deploy:
 deploy_script:
   - ps: >-
       If ($env:APPVEYOR_REPO_BRANCH -eq 'master') {
-          janus.exe deploy -to='isaac-tests/squirrel-0.1.5/'$VERSION_BASE'/brainy-win64-'$VERSION'.zip' -files='./*.zip' -key='./isaac-test-gcp-service-key.enc.json'
+          janus.exe deploy -to=isaac-tests/squirrel-0.1.5/$VERSION_BASE/brainy-win64-$VERSION.zip -files='./*.zip' -key='./isaac-test-gcp-service-key.enc.json'
       }
