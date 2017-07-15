@@ -18,11 +18,17 @@ install:
   - echo %PATH%
 
   # TODO: figure the fuck out how to escape %'s
-  - janus.exe version -format=%%M.%%m.x > version-base.txt
-  - janus.exe version -format=%%M.%%m.%%P+%%C-%%S > version.txt
+  - echo %%M.%%m.x > version-base-format.txt
+  - echo %%M.%%m.%%P+%%C-%%S > version-full-format.txt
+  - set /p VERSION_BASE_FMT=<version-base-format.txt
+  - set /p VERSION_FULL_FMT=<version-full-format.txt
+  - janus.exe version -format=%VERSION_BASE_FMT% > version-base.txt
+  - janus.exe version -format=%VERSION_FULL_FMT% > version.txt
   - set /p VERSION=<version.txt
   - set /p VERSION_BASE=<version-base.txt
   - echo %VERSION_BASE% %VERSION%
+  # And now, thanks to batch scripting, have successfully almost doubled the size
+  # of required lines to make a simple god damn variable.
 
   - echo %GOPATH%
   - go version
