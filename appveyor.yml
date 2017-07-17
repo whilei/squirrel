@@ -32,5 +32,5 @@ artifacts:
 deploy_script:
   - ps: >-
       If ($env:APPVEYOR_REPO_BRANCH -eq 'master') {
-          janus.exe deploy -to="isaac-tests/rodent/$env:VERSION_BASE/brainy-win64-$env:VERSION.zip" -files='./*.zip' -key='./isaac-test-gcp-service-key.enc.json'
+          janus.exe deploy -to="isaac-tests/rodent/$env:VERSION_BASE/" -files='./*.zip' -key='./isaac-test-gcp-service-key.enc.json'
       }
