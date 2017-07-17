@@ -18,8 +18,8 @@ install:
   - echo %PATH%
 
   # TODO: figure the fuck out how to escape %'s
-  - ps: janus.exe 'version -format="%M.%m.x"' > VERSION_BASE.txt
-  - ps: janus.exe 'version -format="%M.%m.%P+%C-%S"' > VERSION.txt
+  - ps: janus.exe version -format='"%M.%m.x"' > VERSION_BASE.txt
+  - ps: janus.exe version -format='"%M.%m.%P+%C-%S"' > VERSION.txt
   - set /p VERSION_BASE=<VERSION_BASE.txt
   - set /p VERSION=<VERSION.txt
   - echo %VERSION_BASE% %VERSION%
