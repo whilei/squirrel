@@ -3,23 +3,20 @@ clone_folder: c:\gopath\src\github.com\ethereumproject\go-ethereum
 os: Visual Studio 2015
 environment:
   GOPATH: c:\gopath
-  # GCP_PASSWD:
-    # secure: erzLJz7qT0kCJa+jZG6Sf9wwkfLYO2UDLzydkKTdwqA=
+  # You can set GCP_PASSWD here or in the AppVeyor Setting GUI.
+  # If setting as below, the encrypted value should be different for each repo.
+  GCP_PASSWD:
+    secure: erzLJz7qT0kCJa+jZG6Sf9wwkfLYO2UDLzydkKTdwqA=
 install:
   - set PATH=%GOPATH%\bin;c:\go\bin;C:\msys64\mingw64\bin;C:\msys64\usr\bin\;%PATH%
-  # - git describe --tags --always > version.txt
-  # - sed -E 's/v([[:digit:]]+\.[[:digit:]]+)\.[[:digit:]]-([[:digit:]]+)-g([a-f0-9]+)/v\1.\2+\3/' version.txt > version-app.txt
-  # - sed -E 's/v([[:digit:]]+\.[[:digit:]]+)\.[[:digit:]]-([[:digit:]]+).+/v\1.\2/' version.txt > version-only.txt
-  # - sed -E 's/v([[:digit:]]+\.[[:digit:]]+)\.[[:digit:]]-([[:digit:]]+).+/v\1.x/' version.txt > version-base.txt
 
   # Install janus.
   - curl -sL https://raw.githubusercontent.com/ethereumproject/janus/master/get-windows.sh | bash
   - set PATH=./janusbin;%PATH%
   - echo %PATH%
 
-  # TODO: figure the fuck out how to escape %'s
   - ps: $env:VERSION_BASE = "$(janus.exe version -format='%M.%m.x')"
-  - ps: $env:VERSION = "$(janus.exe version)"
+  - ps: $env:VERSION = "$(janus.exe version -format=TAG_OR_NIGHTLY)"
   - echo %VERSION_BASE% %VERSION%
 
   - echo %GOPATH%
@@ -32,13 +29,7 @@ build_script:
 artifacts:
   - path: '*.zip'
     name: brainy
-before_deploy:
-  # Set up GCP upload.
-  # - nuget install secure-file -ExcludeVersion
-  # - secure-file\tools\secure-file -decrypt isaac-test-gcp-service-key.enc.json -secret %GCP_PASSWD% -out .gcloud.json
 deploy_script:
-  # Notice how we use $variable syntax here instead of batch script %variable% syntax
-  # Yes, another Windows brilliance.
   - ps: >-
       If ($env:APPVEYOR_REPO_BRANCH -eq 'master') {
           janus.exe deploy -to="isaac-tests/rodent/$VERSION_BASE/brainy-win64-$VERSION.zip" -files='./*.zip' -key='./isaac-test-gcp-service-key.enc.json'
