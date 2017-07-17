@@ -18,8 +18,8 @@ install:
   - echo %PATH%
 
   # TODO: figure the fuck out how to escape %'s
-  - ps: $env:VERSION_BASE = "$(janus.exe version -format='_M._m.x')"
-  - ps: $env:VERSION= "$(janus.exe version)"
+  - ps: $env:VERSION_BASE = "$(janus.exe version -format='%M.%m.x')"
+  - ps: $env:VERSION = "$(janus.exe version)"
   - echo %VERSION_BASE% %VERSION%
 
   - echo %GOPATH%
