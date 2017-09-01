@@ -17,20 +17,37 @@ install:
 
   - ps: $env:VERSION_BASE = "$(janus.exe version -format='%M.%m.x')"
   - ps: $env:VERSION = "$(janus.exe version -format=TAG_OR_NIGHTLY)"
-  - echo %VERSION_BASE% %VERSION%
+  - ps: $env:VERSION_ALL_VARS = "$(janus.exe version -format='major-%M.minor-%m.patch-%P.b-%B.cc-%C.hash-%S')"
+  - echo %VERSION_BASE%
+  - echo %VERSION%
+  - echo %VERSION_ALL_VARS%
+
+  - ps: $env:GIT_DESCRIBE_TAGS_1 = "$(git describe --tags --abbrev=0)"
+  - echo %GIT_DESCRIBE_TAGS_1%
+
+  - ps: $env:GIT_DESCRIBE_TAGS_EXACT_MATCH = "$(git describe --exact-match --abbrev=0)"
+  - echo %GIT_DESCRIBE_TAGS_EXACT_MATCH%
+
+  - ps: $env:GIT_REVLIST_HEAD_COUNT = "$(git rev-list HEAD --count)"
+  - echo %GIT_REVLIST_HEAD_COUNT%
 
   - echo %GOPATH%
   - go version
   - go env
   - go get golang.org/x/sys/windows
+
+# Temporary doesn't matter.
 build_script:
   - go build -o brainy.exe main.go
-  - 7z a brainy-win64-%VERSION%.zip brainy.exe
-artifacts:
-  - path: '*.zip'
-    name: brainy
-deploy_script:
-  - ps: >-
-      If ($env:APPVEYOR_REPO_BRANCH -eq 'master') {
-          janus.exe deploy -to="isaac-tests/rodent/$env:VERSION_BASE/" -files='./*.zip' -key='./isaac-test-gcp-service-key.enc.json'
-      }
+
+# build_script:
+#   - go build -o brainy.exe main.go
+#   - 7z a brainy-win64-%VERSION%.zip brainy.exe
+# artifacts:
+#   - path: '*.zip'
+#     name: brainy
+# deploy_script:
+#   - ps: >-
+#       If ($env:APPVEYOR_REPO_BRANCH -eq 'master') {
+#           janus.exe deploy -to="isaac-tests/rodent/$env:VERSION_BASE/" -files='./*.zip' -key='./isaac-test-gcp-service-key.enc.json'
+#       }
