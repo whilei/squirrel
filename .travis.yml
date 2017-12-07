@@ -31,6 +31,9 @@ before_deploy:
 - export JANUS_SHA1=$(janus version -format %S)
 - if [[ ! $JANUS_COMMIT_COUNT = 0 ]]; then sed -i.bak 's/brainy-{{.Tag}}_{{ .Os }}_{{ .Arch }}/brainy-{{.Tag}}+'$JANUS_COMMIT_COUNT-$JANUS_SHA1'_{{ .Os }}_{{ .Arch }}/' ./.goreleaser.yml; fi
 
+- export JANUS_TON=$(janus version -format TAG_OR_NIGHTLY)
+- echo "TAG_OR_NIGHTLY=$JANUS_TON"
+
 # Use goreleaser to create builds and archives.
 # Places builds and their archives in ./dist/
 - bash ./get-goreleaser.sh
